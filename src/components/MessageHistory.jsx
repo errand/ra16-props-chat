@@ -1,4 +1,7 @@
 import PropTypes from "prop-types";
+import Message from "./Message";
+import Response from "./Response";
+import Typing from "./Typing";
 
 export default function MessageHistory({list}) {
 
@@ -6,23 +9,22 @@ export default function MessageHistory({list}) {
     return
   }
 
-  const renderList = list.map(item =>
-    <li
-      key={item.id}
-      className={item.id === active ? 'active' : ''}
-      onClick={() => setActiveState(item.id)}
-    >
-      <a href={item.value.link}>{item.value.text}</a>
-    </li>)
-
   return (
     <ul data-id="dropdown" className="dropdown">
-      {list}
+      {list.map(item => {
+        if (item.type === 'message') {
+          return <Message key={item.id} from={item.from} time={item.time} message={item.text} />
+        } else if (item.type === 'response') {
+          return <Response key={item.id} from={item.from} time={item.time} message={item.text} />
+        } else {
+          return <Typing key={item.id} from={item.from} time={item.time} />
+        }
+      })}
     </ul>
 
   )
 }
 
 MessageHistory.propTypes = {
-  items: PropTypes.array.isRequired
+  list: PropTypes.array.isRequired
 }
